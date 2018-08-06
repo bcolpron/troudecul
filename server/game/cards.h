@@ -3,6 +3,8 @@
 #include <vector>
 #include <cassert>
 #include <stdexcept>
+#include <random>
+#include <algorithm>
 
 namespace cards
 {
@@ -26,10 +28,15 @@ struct Card
 
 private:
     int data;
+
+    friend bool operator==(const Card& c1, const Card& c2);
+    friend bool operator!=(const Card& c1, const Card& c2);
 };
 
-using Hands = std::vector<Card>;
+bool operator==(const Card& c1, const Card& c2);
+bool operator!=(const Card& c1, const Card& c2);
 
+std::vector<Card> shuffled_deck();
 
 // Implementation
 
@@ -67,5 +74,22 @@ inline bool Card::is_regular() const {
 inline bool Card::is_joker() const {
     return data >> 8 != 0;
 }
+
+inline std::vector<Card> shuffled_deck() {
+    auto d = std::vector<Card>{
+        Card{two, clubs},    Card{three, clubs},    Card{four, clubs},    Card{five, clubs},    Card{six, clubs},    Card{seven, clubs},    Card{eight, clubs},    Card{nine, clubs},    Card{ten, clubs},    Card{jack, clubs},    Card{queen, clubs},    Card{king, clubs},    Card{ace, clubs},
+        Card{two, diamonds}, Card{three, diamonds}, Card{four, diamonds}, Card{five, diamonds}, Card{six, diamonds}, Card{seven, diamonds}, Card{eight, diamonds}, Card{nine, diamonds}, Card{ten, diamonds}, Card{jack, diamonds}, Card{queen, diamonds}, Card{king, diamonds}, Card{ace, diamonds}, 
+        Card{two, hearts},   Card{three, hearts},   Card{four, hearts},   Card{five, hearts},   Card{six, hearts},   Card{seven, hearts},   Card{eight, hearts},   Card{nine, hearts},   Card{ten, hearts},   Card{jack, hearts},   Card{queen, hearts},   Card{king, hearts},   Card{ace, hearts},
+        Card{two, spades},   Card{three, spades},   Card{four, spades},   Card{five, spades},   Card{six, spades},   Card{seven, spades},   Card{eight, spades},   Card{nine, spades},   Card{ten, spades},   Card{jack, spades},   Card{queen, spades},   Card{king, spades},   Card{ace, spades},
+        Card{red_joker},     Card{white_joker}
+    };
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(begin(d), end(d), g);
+    return d;
+}
+
+inline bool operator==(const Card& c1, const Card& c2) { return c1.data == c2.data; }
+inline bool operator!=(const Card& c1, const Card& c2) { return c1.data != c2.data; }
 
 }

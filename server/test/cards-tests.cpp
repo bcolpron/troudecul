@@ -50,3 +50,38 @@ TEST_CASE("joker type access on regular card", "[cards]")
     auto c = Card(five, diamonds);
     CHECK_THROWS_AS(c.joker_type(), std::logic_error);
 }
+
+TEST_CASE("card comparison", "[cards]")
+{
+    CHECK(Card{king, spades} == Card{king, spades});
+    CHECK_FALSE(Card{king, spades} == Card{king, clubs});
+    CHECK_FALSE(Card{king, spades} == Card{jack, spades});
+    CHECK_FALSE(Card{king, spades} == Card{red_joker});
+    CHECK_FALSE(Card{red_joker} == Card{white_joker});
+    CHECK(Card{red_joker} == Card{red_joker});
+}
+TEST_CASE("card comparison 2", "[cards]")
+{
+    CHECK_FALSE(Card{king, spades} != Card{king, spades});
+    CHECK(Card{king, spades} != Card{king, clubs});
+    CHECK(Card{king, spades} != Card{jack, spades});
+    CHECK(Card{king, spades} != Card{red_joker});
+    CHECK(Card{red_joker} != Card{white_joker});
+    CHECK_FALSE(Card{red_joker} != Card{red_joker});
+}
+
+TEST_CASE("deck", "[cards]")
+{
+    auto d = shuffled_deck();
+    CHECK(d.size() == 54);
+    CHECK(1 == std::count(begin(d), end(d), Card{king, spades}));
+    CHECK(1 == std::count(begin(d), end(d), Card{queen, hearts}));
+    CHECK(1 == std::count(begin(d), end(d), Card{red_joker}));
+    // etc...
+}
+
+TEST_CASE("suffled_deck", "[cards]")
+{
+    // two shuffled deck should not be equal (unless really, really lucky)
+    CHECK(shuffled_deck() != shuffled_deck());
+}
