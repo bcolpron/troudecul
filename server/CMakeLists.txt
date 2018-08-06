@@ -20,7 +20,7 @@ add_executable(${app_name} main.cpp ${game_src})
 
 target_include_directories(${app_name} PRIVATE
     ${Boost_INCLUDE_DIRS}
-    ./3rd/
+    .
 )
 
 #set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
