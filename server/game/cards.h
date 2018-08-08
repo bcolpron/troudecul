@@ -38,6 +38,12 @@ bool operator!=(const Card& c1, const Card& c2);
 
 std::vector<Card> shuffled_deck();
 
+struct CardCompare
+{
+    /// returns true if lhs is weaker than rhs; false otherwise
+    bool operator() (const Card& lhs, const Card& rhs) const;
+};
+
 // Implementation
 
 inline Card::Card(Ranks r, Suits s)
@@ -92,4 +98,14 @@ inline std::vector<Card> shuffled_deck() {
 inline bool operator==(const Card& c1, const Card& c2) { return c1.data == c2.data; }
 inline bool operator!=(const Card& c1, const Card& c2) { return c1.data != c2.data; }
 
+inline bool CardCompare::operator() (const Card& lhs, const Card& rhs) const {
+    if (lhs.is_joker()) {
+        if (rhs.is_joker()) return lhs.joker_type() < rhs.joker_type();
+        return false;
+    }
+    if (rhs.is_joker()) return true;
+    if (lhs.rank() == two) return false;
+    if (rhs.rank() == two) return true;
+    return lhs.rank() < rhs.rank();
+}
 }

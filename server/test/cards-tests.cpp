@@ -85,3 +85,43 @@ TEST_CASE("suffled_deck", "[cards]")
     // two shuffled deck should not be equal (unless really, really lucky)
     CHECK(shuffled_deck() != shuffled_deck());
 }
+
+TEST_CASE("CardCompare 1", "[cards]")
+{
+    CardCompare comp;
+    CHECK(comp(Card{three, spades}, Card{five, hearts}));
+    CHECK_FALSE(comp(Card{five, hearts}, Card{three, spades}));
+    CHECK_FALSE(comp(Card{five, hearts}, Card{five, clubs}));
+}
+
+TEST_CASE("CardCompare 2", "[cards]")
+{
+    CardCompare comp;
+    CHECK(comp(Card{king, spades}, Card{ace, hearts}));
+    CHECK_FALSE(comp(Card{ace, hearts}, Card{king, spades}));
+    CHECK_FALSE(comp(Card{ace, hearts}, Card{ace, clubs}));
+}
+
+TEST_CASE("CardCompare 3", "[cards]")
+{
+    CardCompare comp;
+    CHECK(comp(Card{ace, spades}, Card{two, hearts}));
+    CHECK_FALSE(comp(Card{two, hearts}, Card{ace, spades}));
+    CHECK_FALSE(comp(Card{two, hearts}, Card{two, clubs}));
+}
+
+TEST_CASE("CardCompare 4", "[cards]")
+{
+    CardCompare comp;
+    CHECK(comp(Card{two, spades}, Card{red_joker}));
+    CHECK_FALSE(comp(Card{red_joker}, Card{two, spades}));
+    CHECK_FALSE(comp(Card{red_joker}, Card{red_joker}));
+}
+
+TEST_CASE("CardCompare 5", "[cards]")
+{
+    CardCompare comp;
+    CHECK(comp(Card{red_joker}, Card{white_joker}));
+    CHECK_FALSE(comp(Card{white_joker}, Card{red_joker}));
+    CHECK_FALSE(comp(Card{white_joker}, Card{white_joker}));
+}
