@@ -36,6 +36,8 @@ private:
 bool operator==(const Card& c1, const Card& c2);
 bool operator!=(const Card& c1, const Card& c2);
 
+using Hand = std::vector<Card>;
+
 std::vector<Card> shuffled_deck();
 
 struct CardCompare
