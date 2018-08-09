@@ -10,15 +10,16 @@ class Player
 public:
     Player();
 
-    const PlayerId& id() const;
+    const PlayerId& id() const { return id_; }
 
-    void set_hand(cards::Hand);
-    const cards::Hand& hand() const;
+    void set_hand(cards::Hand h) { hand_ = std::move(h); }
+    const cards::Hand& hand() const { return hand_; }
 
-    void has(const cards::Hand&);
-    void take(cards::Hand);
+    bool has(const cards::Hand& h) const { return includes(hand_, h); }
+    void take(const cards::Hand& h);
 
 private:
     std::string id_;
+    cards::Hand hand_;
 };
 

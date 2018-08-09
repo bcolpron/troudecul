@@ -13,6 +13,10 @@ std::string generate_uuid()
 Player::Player()
 : id_(generate_uuid()) {}
 
-const PlayerId& Player::id() const {
-    return id_;
+void Player::take(const cards::Hand& h)
+{
+    if (!includes(hand_, h)) throw std::logic_error("cannot take missing cards");
+    std::for_each(h.begin(), h.end(), [this] (auto card) {
+        hand_.erase(card);
+    });
 }
