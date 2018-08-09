@@ -1,5 +1,6 @@
 #pragma once
 
+#include "boost/container/flat_set.hpp"
 #include <vector>
 #include <cassert>
 #include <stdexcept>
@@ -36,9 +37,6 @@ private:
 bool operator==(const Card& c1, const Card& c2);
 bool operator!=(const Card& c1, const Card& c2);
 
-using Hand = std::vector<Card>;
-
-std::vector<Card> shuffled_deck();
 
 struct StrengthCompare
 {
@@ -52,6 +50,12 @@ struct OrderCompare
     bool operator() (const Card& lhs, const Card& rhs) const;
 
 };
+
+using Deck = std::vector<Card>;
+using Hand = boost::container::flat_set<Card, OrderCompare>;
+
+Deck shuffled_deck();
+bool includes(const Hand& superset, const Hand& subset);
 
 // Implementation
 
@@ -90,8 +94,8 @@ inline bool Card::is_joker() const {
     return data >> 8 != 0;
 }
 
-inline std::vector<Card> shuffled_deck() {
-    auto d = std::vector<Card>{
+inline Deck shuffled_deck() {
+    auto d = Deck{
         Card{two, clubs},    Card{three, clubs},    Card{four, clubs},    Card{five, clubs},    Card{six, clubs},    Card{seven, clubs},    Card{eight, clubs},    Card{nine, clubs},    Card{ten, clubs},    Card{jack, clubs},    Card{queen, clubs},    Card{king, clubs},    Card{ace, clubs},
         Card{two, diamonds}, Card{three, diamonds}, Card{four, diamonds}, Card{five, diamonds}, Card{six, diamonds}, Card{seven, diamonds}, Card{eight, diamonds}, Card{nine, diamonds}, Card{ten, diamonds}, Card{jack, diamonds}, Card{queen, diamonds}, Card{king, diamonds}, Card{ace, diamonds}, 
         Card{two, hearts},   Card{three, hearts},   Card{four, hearts},   Card{five, hearts},   Card{six, hearts},   Card{seven, hearts},   Card{eight, hearts},   Card{nine, hearts},   Card{ten, hearts},   Card{jack, hearts},   Card{queen, hearts},   Card{king, hearts},   Card{ace, hearts},
@@ -124,6 +128,11 @@ inline bool OrderCompare::operator() (const Card& lhs, const Card& rhs) const {
     if (c(rhs, lhs)) return false;
     if (lhs.is_joker()) return false;
     return lhs.suit() < rhs.suit();
+}
+
+inline bool includes(const Hand& superset, const Hand& subset)
+{
+    return std::includes(superset.begin(), superset.end(), subset.begin(), subset.end(), OrderCompare());
 }
 
 }

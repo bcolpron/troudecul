@@ -144,3 +144,18 @@ TEST_CASE("OrderCompare identity 2", "[cards]")
     OrderCompare comp;
     CHECK_FALSE(comp(Card{white_joker}, Card{white_joker}));
 }
+
+TEST_CASE("Hand", "[cards]")
+{
+    Hand h1{Card{five, clubs}, Card{ace, spades}, Card{king, hearts}};
+    Hand h2{Card{king, hearts}, Card{ace, spades}, Card{five, clubs}};
+    CHECK(h1 == h2);
+}
+
+TEST_CASE("Hand 2", "[cards]")
+{
+    Hand h1{Card{five, clubs}, Card{ace, spades}, Card{king, hearts}};
+    Hand h2{Card{king, hearts}};
+    CHECK(includes(h1, h2));
+    CHECK_FALSE(includes(h2, h1));
+}
