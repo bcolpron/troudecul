@@ -40,10 +40,17 @@ using Hand = std::vector<Card>;
 
 std::vector<Card> shuffled_deck();
 
-struct CardCompare
+struct StrengthCompare
 {
     /// returns true if lhs is weaker than rhs; false otherwise
     bool operator() (const Card& lhs, const Card& rhs) const;
+};
+
+struct OrderCompare
+{
+    /// returns true if lhs comes before rhs; false otherwise
+    bool operator() (const Card& lhs, const Card& rhs) const;
+
 };
 
 // Implementation
@@ -100,7 +107,7 @@ inline std::vector<Card> shuffled_deck() {
 inline bool operator==(const Card& c1, const Card& c2) { return c1.data == c2.data; }
 inline bool operator!=(const Card& c1, const Card& c2) { return c1.data != c2.data; }
 
-inline bool CardCompare::operator() (const Card& lhs, const Card& rhs) const {
+inline bool StrengthCompare::operator() (const Card& lhs, const Card& rhs) const {
     if (lhs.is_joker()) {
         if (rhs.is_joker()) return lhs.joker_type() < rhs.joker_type();
         return false;
@@ -110,4 +117,13 @@ inline bool CardCompare::operator() (const Card& lhs, const Card& rhs) const {
     if (rhs.rank() == two) return true;
     return lhs.rank() < rhs.rank();
 }
+
+inline bool OrderCompare::operator() (const Card& lhs, const Card& rhs) const {
+    StrengthCompare c;
+    if (c(lhs, rhs)) return true;
+    if (c(rhs, lhs)) return false;
+    if (lhs.is_joker()) return false;
+    return lhs.suit() < rhs.suit();
+}
+
 }
