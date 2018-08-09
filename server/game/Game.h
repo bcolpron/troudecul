@@ -1,29 +1,17 @@
 #pragma once
 
 #include "cards.h"
-
-using PlayerId = std::string;
-
-class Player
-{
-public:
-    explicit Player();
-
-    const PlayerId& id() const;
-
-    void set_hand(cards::Hand);
-    const cards::Hand& hand() const;
-
-    void has(const cards::Hand&);
-    void take(cards::Hand);
-};
+#include "Player.h"
+#include <optional>
 
 class Game
 {
 public:
-    //Game(std::vector<PlayerId> players);
+    template<class PlayerSeq>
+    Game(PlayerSeq& players) {}
 
     PlayerId next_to_play();
+    std::optional<cards::Hand> hand_to_beat();
 
     void play();
     void play(const PlayerId& id, const cards::Hand& cards);

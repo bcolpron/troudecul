@@ -1,7 +1,7 @@
 #include "game/Game.h"
 #include "catch.hpp"
 
-TEST_CASE("dummy")
+TEST_CASE("dummy", "[game]")
 {
-    Game().play();
+
 }
