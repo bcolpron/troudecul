@@ -23,3 +23,5 @@ private:
     cards::Hand hand_;
 };
 
+inline bool operator==(const Player& p1, const Player& p2) { return p1.id() == p2.id(); }
+inline bool operator!=(const Player& p1, const Player& p2) { return p1.id() != p2.id(); }

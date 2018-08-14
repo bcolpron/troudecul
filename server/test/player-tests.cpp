@@ -7,6 +7,16 @@ TEST_CASE("Default construction and Identity", "[player]")
     CHECK(p.id().size() != 0);
 }
 
+TEST_CASE("Player equality compare", "[player]")
+{
+    Player p1, p2;
+    CHECK(p1 == p1);
+    CHECK_FALSE(p1 != p1);
+
+    CHECK(p1 != p2);
+    CHECK_FALSE(p1 == p2);
+}
+
 TEST_CASE("Player hand", "[player]")
 {
     using namespace cards;

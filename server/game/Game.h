@@ -3,17 +3,22 @@
 #include "cards.h"
 #include "Player.h"
 #include <optional>
+#include <boost/container/small_vector.hpp>
 
 class Game
 {
 public:
     template<class PlayerSeq>
-    Game(PlayerSeq& players) {}
+    Game(PlayerSeq& players)
+    : players_(begin(players), end(players)) {}
 
-    PlayerId next_to_play();
-    std::optional<cards::Hand> hand_to_beat();
+    const Player& current_player() const;
+    const std::optional<cards::Hand>& hand_to_beat() const { return cards_on_table_; }
 
-    void play();
     void play(const PlayerId& id, const cards::Hand& cards);
     void pass(const PlayerId& id);
+
+private:
+    boost::container::small_vector<Player, 4> players_;
+    std::optional<cards::Hand> cards_on_table_;
 };
