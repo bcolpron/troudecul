@@ -1,5 +1,6 @@
 #include "game/Game.h"
 #include "catch.hpp"
+#include <boost/function_output_iterator.hpp>
 
 using namespace cards;
 
@@ -127,3 +128,28 @@ TEST_CASE("is_valid_play one fewer two is required", "[game][rules]")
     CHECK_FALSE(is_valid_play(Hand{Card{two, spades}, Card{two, clubs}}, Hand{Card{two, hearts}}));
 }
 
+TEST_CASE("deal_cards", "[game]")
+{
+    Players players(4);
+    deal_cards(players);
+    CHECK(players[0].hand().size() == 14);
+    CHECK(players[1].hand().size() == 14);
+    CHECK(players[2].hand().size() == 13);
+    CHECK(players[3].hand().size() == 13);
+
+    auto count_common_cards = [] (auto hand1, auto hand2)
+    {
+        auto common_cards = 0;
+        std::set_intersection(
+            hand1.begin(), hand1.end(),
+            hand2.begin(), hand2.end(),
+            boost::make_function_output_iterator([&common_cards] (auto) {++common_cards;}),
+            cards::OrderCompare());
+        return common_cards;
+    };
+
+    CHECK(0 == count_common_cards(players[0].hand(), players[1].hand()));
+    CHECK(0 == count_common_cards(players[1].hand(), players[2].hand()));
+    CHECK(0 == count_common_cards(players[2].hand(), players[3].hand()));
+    CHECK(0 == count_common_cards(players[3].hand(), players[0].hand()));
+}

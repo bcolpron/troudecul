@@ -61,3 +61,12 @@ bool is_valid_play(const std::optional<cards::Hand>& table, const cards::Hand& p
     // Finally, compare card strenghs
     return cards::StrengthCompare()(*(*table).begin(), *play.begin());
 }
+
+void deal_cards(Players& players)
+{
+    auto deck = cards::shuffled_deck();
+    players[0].set_hand(cards::Hand(deck.begin(),    deck.begin()+14));
+    players[1].set_hand(cards::Hand(deck.begin()+14, deck.begin()+28));
+    players[2].set_hand(cards::Hand(deck.begin()+28, deck.begin()+41));
+    players[3].set_hand(cards::Hand(deck.begin()+41, deck.end()));
+}

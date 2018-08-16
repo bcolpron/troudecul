@@ -29,6 +29,6 @@ private:
     Players::iterator last_played_;
 };
 
-void deal_cards();
+void deal_cards(Players& players);
 
 bool is_valid_play(const std::optional<cards::Hand>& table, const cards::Hand& play);
