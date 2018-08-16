@@ -3,7 +3,6 @@
 #include "cards.h"
 #include "Player.h"
 #include <optional>
-#include <boost/container/small_vector.hpp>
 
 class Game
 {
@@ -21,8 +20,6 @@ public:
     void pass(const PlayerId& id);
 
 private:
-    typedef boost::container::small_vector<Player, 4> Players;
-
     void move_on_next_player();
 
     Players players_;

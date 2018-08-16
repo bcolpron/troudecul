@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cards.h"
+#include <boost/container/small_vector.hpp>
 #include <string>
 
 using PlayerId = std::string;
@@ -25,3 +26,5 @@ private:
 
 inline bool operator==(const Player& p1, const Player& p2) { return p1.id() == p2.id(); }
 inline bool operator!=(const Player& p1, const Player& p2) { return p1.id() != p2.id(); }
+
+using Players = boost::container::small_vector<Player, 4>;
