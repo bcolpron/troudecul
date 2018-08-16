@@ -35,3 +35,29 @@ void Game::pass(const PlayerId& id)
 
     move_on_next_player();
 }
+
+bool is_valid_play(const std::optional<cards::Hand>& table, const cards::Hand& play)
+{
+    // Validate play hand
+    if (play.empty()) return false;
+    if (std::find_if(++play.begin(), play.end(),
+                     [&] (auto card) { return card.rank() != play.begin()->rank(); })
+        != play.end())
+    {
+        return false;
+    }
+
+    // if play is valid and table is empty, then fine.
+    if (!table) return true;
+
+    // Then, make sure play cards number is valid against table
+    if (table->size() != play.size()
+        && !play.begin()->is_joker()
+        && !(play.begin()->rank() == cards::two && table->size()-1 == play.size()))
+    {
+        return false;
+    }
+
+    // Finally, compare card strenghs
+    return cards::StrengthCompare()(*(*table).begin(), *play.begin());
+}
