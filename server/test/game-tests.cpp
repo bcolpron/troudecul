@@ -1,6 +1,8 @@
 #include "game/Game.h"
 #include "catch.hpp"
 #include <boost/function_output_iterator.hpp>
+#include <range/v3/core.hpp>
+#include <range/v3/view/transform.hpp>
 
 using namespace cards;
 
@@ -12,24 +14,26 @@ namespace
     const auto pair_of_aces = Hand{Card{ace, hearts}, Card{ace, spades}};
 }
 
+auto ids = [](auto&& players){return players|ranges::view::transform([](const auto& p){return p.id();});};
+
 TEST_CASE("Game initialization", "[game]")
 {
     std::array<Player, 4> players;
-    Game g(players);
-    CHECK(g.current_player() == players[0]);
+    Game g(ids(players));
+    CHECK(g.current_player() == players[0].id());
     CHECK_FALSE(g.hand_to_beat());
 }
 
 TEST_CASE("Game play", "[game]")
 {
     std::array<Player, 4> players;
-    Game g(players);
+    Game g(ids(players));
 
     SECTION("first player plays")
     {
         g.play(players[0].id(), pair_of_threes);
         CHECK(g.hand_to_beat() == pair_of_threes);
-        CHECK(g.current_player() == players[1]);
+        CHECK(g.current_player() == players[1].id());
     }
 
     SECTION("all players play")
@@ -38,7 +42,7 @@ TEST_CASE("Game play", "[game]")
         g.play(players[1].id(), pair_of_five);
         g.play(players[2].id(), pair_of_jack);
         g.play(players[3].id(), pair_of_aces);
-        CHECK(g.current_player() == players[3]);
+        CHECK(g.current_player() == players[3].id());
         CHECK_FALSE(g.hand_to_beat());
     }
 
@@ -51,7 +55,7 @@ TEST_CASE("Game play", "[game]")
 TEST_CASE("Game pass", "[game]")
 {
     std::array<Player, 4> players;
-    Game g(players);
+    Game g(ids(players));
 
     SECTION("first player cannot pass")
     {
@@ -62,7 +66,7 @@ TEST_CASE("Game pass", "[game]")
     {
         g.play(players[0].id(), pair_of_threes);
         g.pass(players[1].id());
-        CHECK(g.current_player() == players[2]);
+        CHECK(g.current_player() == players[2].id());
     }
 
     SECTION("all others players pass")
@@ -71,7 +75,7 @@ TEST_CASE("Game pass", "[game]")
         g.pass(players[1].id());
         g.pass(players[2].id());
         g.pass(players[3].id());
-        CHECK(g.current_player() == players[0]);
+        CHECK(g.current_player() == players[0].id());
         CHECK_FALSE(g.hand_to_beat());
     }
 
@@ -81,7 +85,7 @@ TEST_CASE("Game pass", "[game]")
         g.play(players[1].id(), pair_of_five);
         g.play(players[2].id(), pair_of_jack);
         g.pass(players[3].id());
-        CHECK(g.current_player() == players[2]);
+        CHECK(g.current_player() == players[2].id());
         CHECK_FALSE(g.hand_to_beat());
     }
 }

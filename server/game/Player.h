@@ -28,3 +28,4 @@ inline bool operator==(const Player& p1, const Player& p2) { return p1.id() == p
 inline bool operator!=(const Player& p1, const Player& p2) { return p1.id() != p2.id(); }
 
 using Players = boost::container::small_vector<Player, 4>;
+using PlayerIds = boost::container::small_vector<PlayerId, 4>;

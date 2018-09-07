@@ -1,7 +1,6 @@
 #include "Game.h"
-//#include "http/websockets.h"
 
-const Player& Game::current_player() const
+const PlayerId& Game::current_player() const
 {
     return *current_player_;
 }
@@ -21,7 +20,7 @@ void Game::move_on_next_player()
 
 void Game::play(const PlayerId& id, const cards::Hand& cards)
 {
-    if (id != current_player_->id()) throw std::logic_error("Not player's turn");
+    if (id != *current_player_) throw std::logic_error("Not player's turn");
 
     cards_on_table_ = cards;
     last_played_ = current_player_;
