@@ -14,7 +14,7 @@ public:
       current_player_(first_player_) {}
 
     const PlayerId& current_player() const;
-    const std::optional<cards::Hand>& hand_to_beat() const { return cards_on_table_; }
+    const std::optional<cards::Hand>& hand_to_beat() const { return trick_; }
 
     void play(const PlayerId& id, const cards::Hand& cards);
     void pass(const PlayerId& id);
@@ -23,7 +23,7 @@ private:
     void move_on_next_player();
 
     PlayerIds players_;
-    std::optional<cards::Hand> cards_on_table_;
+    std::optional<cards::Hand> trick_;
     PlayerIds::iterator first_player_;
     PlayerIds::iterator current_player_;
     PlayerIds::iterator last_played_;
