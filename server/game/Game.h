@@ -3,6 +3,7 @@
 #include "cards.h"
 #include "Player.h"
 #include <optional>
+#include <list>
 
 class Game
 {
@@ -17,16 +18,21 @@ public:
     const std::optional<cards::Hand>& hand_to_beat() const { return trick_; }
 
     void play(const PlayerId& id, const cards::Hand& cards);
+    void play_and_finish(const PlayerId& id, const cards::Hand& cards);
     void pass(const PlayerId& id);
 
+    const PlayerIds& final_titles()const { return final_titles_; }
 private:
     void move_on_next_player();
 
-    PlayerIds players_;
+    using Players = std::list<PlayerId>;
+    Players players_;
+    Players::iterator first_player_;
+    Players::iterator current_player_;
+    Players::iterator last_played_;
+    
     std::optional<cards::Hand> trick_;
-    PlayerIds::iterator first_player_;
-    PlayerIds::iterator current_player_;
-    PlayerIds::iterator last_played_;
+    PlayerIds final_titles_;
 };
 
 void deal_cards(Players& players);

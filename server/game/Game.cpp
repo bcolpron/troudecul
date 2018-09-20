@@ -12,7 +12,7 @@ void Game::move_on_next_player()
 
     if (next == first_player_) {
         trick_ = std::nullopt;
-        current_player_ = last_played_;
+        first_player_ = current_player_ = last_played_;
     } else {
         current_player_ = next;
     }
@@ -26,6 +26,24 @@ void Game::play(const PlayerId& id, const cards::Hand& cards)
     last_played_ = current_player_;
 
     move_on_next_player();
+}
+
+void Game::play_and_finish(const PlayerId& id, const cards::Hand& cards)
+{
+    // note down current player iterator
+    auto p = current_player_;
+
+    // play as usual
+    play(id, cards);
+
+    // remove the player from active players
+    players_.erase(p);
+
+    // player next to finished player is always next to play 
+    last_played_ = current_player_;
+
+    // attribute title!
+    final_titles_.push_back(id);
 }
 
 void Game::pass(const PlayerId& id)

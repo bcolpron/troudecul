@@ -46,6 +46,21 @@ TEST_CASE("Game play", "[game]")
         CHECK_FALSE(g.hand_to_beat());
     }
 
+    SECTION("all players play 2")
+    {
+        g.play(players[0].id(), pair_of_threes);
+        g.play(players[1].id(), pair_of_five);
+        g.play(players[2].id(), pair_of_jack);
+        g.play(players[3].id(), pair_of_aces);
+
+        g.play(players[3].id(), pair_of_aces);
+        g.play(players[0].id(), pair_of_threes);
+        g.play(players[1].id(), pair_of_five);
+        g.play(players[2].id(), pair_of_jack);
+        CHECK(g.current_player() == players[2].id());
+        CHECK_FALSE(g.hand_to_beat());
+    }
+
     SECTION("wrong player")
     {
         CHECK_THROWS_AS(g.play(players[1].id(), pair_of_threes), std::logic_error);
@@ -84,6 +99,52 @@ TEST_CASE("Game pass", "[game]")
         g.play(players[0].id(), pair_of_threes);
         g.play(players[1].id(), pair_of_five);
         g.play(players[2].id(), pair_of_jack);
+        g.pass(players[3].id());
+        CHECK(g.current_player() == players[2].id());
+        CHECK_FALSE(g.hand_to_beat());
+    }
+}
+
+TEST_CASE("Game play_and_finishes", "[game]")
+{
+    std::array<Player, 4> players;
+    Game g(ids(players));
+
+    SECTION("initial state - no titles")
+    {
+        CHECK(g.final_titles() == PlayerIds{});
+    }
+
+    SECTION("first player to finish get first title")
+    {
+        g.play_and_finish(players[0].id(), pair_of_jack);
+        CHECK(g.current_player() == players[1].id());
+        CHECK(g.final_titles() == PlayerIds{players[0].id()});
+    }
+
+    SECTION("players who finished no longer play")
+    {
+        g.play_and_finish(players[0].id(), pair_of_jack);
+        g.play(players[1].id(), pair_of_jack);
+        g.play(players[2].id(), pair_of_jack);
+        g.play(players[3].id(), pair_of_jack);
+        CHECK(g.current_player() == players[1].id());
+    }
+
+    SECTION("player next to finished player is next to play even if he passes")
+    {
+        g.play_and_finish(players[0].id(), pair_of_jack);
+        g.pass(players[1].id());
+        g.pass(players[2].id());
+        g.pass(players[3].id());
+        CHECK(g.current_player() == players[1].id());
+    }
+
+    SECTION("player next to finished player is next to play even if he passes 2")
+    {
+        g.play(players[0].id(), pair_of_five);
+        g.play_and_finish(players[1].id(), pair_of_jack);
+        g.pass(players[2].id());
         g.pass(players[3].id());
         CHECK(g.current_player() == players[2].id());
         CHECK_FALSE(g.hand_to_beat());
