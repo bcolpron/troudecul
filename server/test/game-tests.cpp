@@ -149,15 +149,30 @@ TEST_CASE("Game play_and_finishes", "[game]")
         CHECK(g.current_player() == players[2].id());
         CHECK_FALSE(g.hand_to_beat());
     }
+}
 
-    SECTION("all players finish")
+TEST_CASE("round finished", "[game]")
+{
+    std::array<Player, 4> players;
+    Game g(ids(players));
+
+    // all players finish
+    g.play_and_finish(players[0].id(), pair_of_threes);
+    g.play_and_finish(players[1].id(), pair_of_five);
+    g.play_and_finish(players[2].id(), pair_of_jack);
+    g.play_and_finish(players[3].id(), pair_of_aces);
+
+    SECTION("basic state validation")
     {
-        g.play_and_finish(players[0].id(), pair_of_threes);
-        g.play_and_finish(players[1].id(), pair_of_five);
-        g.play_and_finish(players[2].id(), pair_of_jack);
-        g.play_and_finish(players[3].id(), pair_of_aces);
         CHECK_FALSE(g.hand_to_beat());
         CHECK_THROWS_AS(g.current_player(), std::logic_error);
+    }
+
+    SECTION("play and pass")
+    {
+        CHECK_THROWS_AS(g.play(players[0].id(), pair_of_threes), std::logic_error);
+        CHECK_THROWS_AS(g.play_and_finish(players[0].id(), pair_of_threes), std::logic_error);
+        CHECK_THROWS_AS(g.pass(players[0].id()), std::logic_error);
     }
 
 }

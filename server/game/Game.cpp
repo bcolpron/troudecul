@@ -21,6 +21,7 @@ void Game::move_on_next_player()
 
 void Game::play(const PlayerId& id, const cards::Hand& cards)
 {
+    if (current_player_ == players_.end()) throw std::logic_error("round is over");
     if (id != *current_player_) throw std::logic_error("Not player's turn");
 
     trick_ = cards;
@@ -57,6 +58,7 @@ void Game::play_and_finish(const PlayerId& id, const cards::Hand& cards)
 
 void Game::pass(const PlayerId& id)
 {
+    if (current_player_ == players_.end()) throw std::logic_error("round is over");
     if (!trick_) throw std::logic_error("first player cannot pass");
 
     move_on_next_player();
