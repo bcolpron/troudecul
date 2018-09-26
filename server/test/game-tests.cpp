@@ -128,7 +128,7 @@ TEST_CASE("Game play_and_finishes", "[game]")
         g.play(players[1].id(), pair_of_jack);
         g.play(players[2].id(), pair_of_jack);
         g.play(players[3].id(), pair_of_jack);
-        CHECK(g.current_player() == players[1].id());
+        CHECK(g.current_player() == players[3].id());
     }
 
     SECTION("player next to finished player is next to play even if he passes")
@@ -149,6 +149,17 @@ TEST_CASE("Game play_and_finishes", "[game]")
         CHECK(g.current_player() == players[2].id());
         CHECK_FALSE(g.hand_to_beat());
     }
+
+    SECTION("all players finish")
+    {
+        g.play_and_finish(players[0].id(), pair_of_threes);
+        g.play_and_finish(players[1].id(), pair_of_five);
+        g.play_and_finish(players[2].id(), pair_of_jack);
+        g.play_and_finish(players[3].id(), pair_of_aces);
+        CHECK_FALSE(g.hand_to_beat());
+        CHECK_THROWS_AS(g.current_player(), std::logic_error);
+    }
+
 }
 
 TEST_CASE("is_valid_play anything beats nothing", "[game][rules]")

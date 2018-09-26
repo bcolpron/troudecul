@@ -2,6 +2,7 @@
 
 const PlayerId& Game::current_player() const
 {
+    if (current_player_ == players_.end()) throw std::logic_error("round is over");
     return *current_player_;
 }
 
@@ -36,6 +37,11 @@ void Game::play_and_finish(const PlayerId& id, const cards::Hand& cards)
     // play as usual
     play(id, cards);
 
+    // fix-up the first player in case the finishing player was first
+    if (p == first_player_) {
+        first_player_ = current_player_;
+    }
+
     // remove the player from active players
     players_.erase(p);
 
@@ -44,6 +50,9 @@ void Game::play_and_finish(const PlayerId& id, const cards::Hand& cards)
 
     // attribute title!
     final_titles_.push_back(id);
+
+    // special case of last player move
+    if (players_.empty()) current_player_ = players_.end();
 }
 
 void Game::pass(const PlayerId& id)
