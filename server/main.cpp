@@ -1,5 +1,5 @@
 
-#include "game/Game.h"
+#include "game/Round.h"
 #include "http/websockets.h"
 #include <range/v3/core.hpp>
 #include <range/v3/view/transform.hpp>
@@ -8,7 +8,7 @@
 int main(int, const char*[])
 {
     std::array<Player, 4> players;
-    Game game(ranges::view::transform(players, [] (const auto& player) {return player.id();}));
+    Round game(ranges::view::transform(players, [] (const auto& player) {return player.id();}));
 
     WebSocketServer server;
     server.run(8888);

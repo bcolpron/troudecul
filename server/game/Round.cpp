@@ -1,12 +1,12 @@
-#include "Game.h"
+#include "Round.h"
 
-const PlayerId& Game::current_player() const
+const PlayerId& Round::current_player() const
 {
     if (current_player_ == players_.end()) throw std::logic_error("round is over");
     return *current_player_;
 }
 
-void Game::move_on_next_player()
+void Round::move_on_next_player()
 {
     auto next = current_player_;
     if (++next == players_.end()) next = players_.begin();
@@ -19,7 +19,7 @@ void Game::move_on_next_player()
     }
 }
 
-void Game::play(const PlayerId& id, const cards::Hand& cards)
+void Round::play(const PlayerId& id, const cards::Hand& cards)
 {
     if (current_player_ == players_.end()) throw std::logic_error("round is over");
     if (id != *current_player_) throw std::logic_error("Not player's turn");
@@ -30,7 +30,7 @@ void Game::play(const PlayerId& id, const cards::Hand& cards)
     move_on_next_player();
 }
 
-void Game::play_and_finish(const PlayerId& id, const cards::Hand& cards)
+void Round::play_and_finish(const PlayerId& id, const cards::Hand& cards)
 {
     // note down current player iterator
     auto p = current_player_;
@@ -56,7 +56,7 @@ void Game::play_and_finish(const PlayerId& id, const cards::Hand& cards)
     if (players_.empty()) current_player_ = players_.end();
 }
 
-void Game::pass(const PlayerId& id)
+void Round::pass(const PlayerId& id)
 {
     if (current_player_ == players_.end()) throw std::logic_error("round is over");
     if (!trick_) throw std::logic_error("first player cannot pass");

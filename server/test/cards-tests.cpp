@@ -1,4 +1,4 @@
-#include "game/Game.h"
+#include "game/cards.h"
 #include "catch.hpp"
 #include <stdexcept>
 

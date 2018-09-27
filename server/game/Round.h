@@ -5,11 +5,11 @@
 #include <optional>
 #include <list>
 
-class Game
+class Round
 {
 public:
     template<class PlayerIdSeq>
-    Game(const PlayerIdSeq& players)
+    Round(const PlayerIdSeq& players)
     : players_(players.begin(), players.end()),
       first_player_(players_.begin()),
       current_player_(first_player_) {}

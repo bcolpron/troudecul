@@ -1,4 +1,4 @@
-#include "game/Game.h"
+#include "game/Round.h"
 #include "catch.hpp"
 #include <boost/function_output_iterator.hpp>
 #include <range/v3/core.hpp>
@@ -16,18 +16,18 @@ namespace
 
 auto ids = [](auto&& players){return players|ranges::view::transform([](const auto& p){return p.id();});};
 
-TEST_CASE("Game initialization", "[game]")
+TEST_CASE("Round initialization", "[game]")
 {
     std::array<Player, 4> players;
-    Game g(ids(players));
+    Round g(ids(players));
     CHECK(g.current_player() == players[0].id());
     CHECK_FALSE(g.hand_to_beat());
 }
 
-TEST_CASE("Game play", "[game]")
+TEST_CASE("Round play", "[game]")
 {
     std::array<Player, 4> players;
-    Game g(ids(players));
+    Round g(ids(players));
 
     SECTION("first player plays")
     {
@@ -67,10 +67,10 @@ TEST_CASE("Game play", "[game]")
     }
 }
 
-TEST_CASE("Game pass", "[game]")
+TEST_CASE("Round pass", "[game]")
 {
     std::array<Player, 4> players;
-    Game g(ids(players));
+    Round g(ids(players));
 
     SECTION("first player cannot pass")
     {
@@ -105,10 +105,10 @@ TEST_CASE("Game pass", "[game]")
     }
 }
 
-TEST_CASE("Game play_and_finishes", "[game]")
+TEST_CASE("Round play_and_finishes", "[game]")
 {
     std::array<Player, 4> players;
-    Game g(ids(players));
+    Round g(ids(players));
 
     SECTION("initial state - no titles")
     {
@@ -154,7 +154,7 @@ TEST_CASE("Game play_and_finishes", "[game]")
 TEST_CASE("round finished", "[game]")
 {
     std::array<Player, 4> players;
-    Game g(ids(players));
+    Round g(ids(players));
 
     // all players finish
     g.play_and_finish(players[0].id(), pair_of_threes);
