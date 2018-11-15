@@ -175,6 +175,10 @@ TEST_CASE("round finished", "[Round]")
         CHECK_THROWS_AS(g.pass(players[0].id()), std::logic_error);
     }
 
+    SECTION("ranks")
+    {
+        CHECK(g.final_ranks() == PlayerIds{ids(players)});
+    }
 }
 
 TEST_CASE("is_valid_play anything beats nothing", "[Round][rules]")
