@@ -21,7 +21,7 @@ public:
     void play_and_finish(const PlayerId& id, const cards::Hand& cards);
     void pass(const PlayerId& id);
 
-    const PlayerIds& final_titles()const { return final_titles_; }
+    const PlayerIds& final_ranks()const { return final_ranks_; }
 private:
     void move_on_next_player();
 
@@ -32,7 +32,7 @@ private:
     Players::iterator last_played_;
     
     std::optional<cards::Hand> trick_;
-    PlayerIds final_titles_;
+    PlayerIds final_ranks_;
 };
 
 void deal_cards(Players& players);

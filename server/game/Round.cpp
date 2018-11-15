@@ -49,8 +49,8 @@ void Round::play_and_finish(const PlayerId& id, const cards::Hand& cards)
     // player next to finished player is always next to play 
     last_played_ = current_player_;
 
-    // attribute title!
-    final_titles_.push_back(id);
+    // attribute rank!
+    final_ranks_.push_back(id);
 
     // special case of last player move
     if (players_.empty()) current_player_ = players_.end();

@@ -110,16 +110,16 @@ TEST_CASE("Round play_and_finishes", "[Round]")
     std::array<Player, 4> players;
     Round g(ids(players));
 
-    SECTION("initial state - no titles")
+    SECTION("initial state - no ranks")
     {
-        CHECK(g.final_titles() == PlayerIds{});
+        CHECK(g.final_ranks() == PlayerIds{});
     }
 
-    SECTION("first player to finish get first title")
+    SECTION("first player to finish get first rank")
     {
         g.play_and_finish(players[0].id(), pair_of_jack);
         CHECK(g.current_player() == players[1].id());
-        CHECK(g.final_titles() == PlayerIds{players[0].id()});
+        CHECK(g.final_ranks() == PlayerIds{players[0].id()});
     }
 
     SECTION("players who finished no longer play")
