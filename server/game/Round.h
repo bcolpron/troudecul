@@ -2,17 +2,22 @@
 
 #include "cards.h"
 #include "Player.h"
+#include "Events.h"
 #include <optional>
 #include <list>
+#include <memory>
 
 class Round
 {
 public:
     template<class PlayerIdSeq>
-    Round(const PlayerIdSeq& players)
+    Round(const PlayerIdSeq& players,
+          std::shared_ptr<RoundEventSink> event_sink)
     : players_(players.begin(), players.end()),
       first_player_(players_.begin()),
-      current_player_(first_player_) {}
+      current_player_(first_player_),
+      event_sink_{event_sink}
+       {}
 
     const PlayerId& current_player() const;
     const std::optional<cards::Hand>& hand_to_beat() const { return trick_; }
@@ -33,6 +38,8 @@ private:
     
     std::optional<cards::Hand> trick_;
     PlayerIds final_ranks_;
+
+    std::shared_ptr<RoundEventSink> event_sink_;
 };
 
 void deal_cards(Players& players);

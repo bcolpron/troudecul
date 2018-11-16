@@ -1,4 +1,5 @@
 #include "game/Round.h"
+#include "game/Events.h"
 #include "catch.hpp"
 #include <boost/function_output_iterator.hpp>
 #include <range/v3/core.hpp>
@@ -12,6 +13,19 @@ namespace
     const auto pair_of_five = Hand{Card{five, hearts}, Card{five, spades}};
     const auto pair_of_jack = Hand{Card{jack, hearts}, Card{jack, spades}};
     const auto pair_of_aces = Hand{Card{ace, hearts}, Card{ace, spades}};
+
+    struct SinkMock: RoundEventSink
+    {
+        virtual void broadcast(const RoundState& s) override
+        {
+
+        }
+
+        int call_count = 0;
+        RoundState last_state;
+    };
+
+    auto make_sink() { return std::make_shared<SinkMock>(); }
 }
 
 auto ids = [](auto&& players){return players|ranges::view::transform([](const auto& p){return p.id();});};
@@ -19,7 +33,7 @@ auto ids = [](auto&& players){return players|ranges::view::transform([](const au
 TEST_CASE("Round initialization", "[Round]")
 {
     std::array<Player, 4> players;
-    Round g(ids(players));
+    Round g(ids(players), make_sink());
     CHECK(g.current_player() == players[0].id());
     CHECK_FALSE(g.hand_to_beat());
 }
@@ -27,7 +41,7 @@ TEST_CASE("Round initialization", "[Round]")
 TEST_CASE("Round play", "[Round]")
 {
     std::array<Player, 4> players;
-    Round g(ids(players));
+    Round g(ids(players), make_sink());
 
     SECTION("first player plays")
     {
@@ -70,7 +84,7 @@ TEST_CASE("Round play", "[Round]")
 TEST_CASE("Round pass", "[Round]")
 {
     std::array<Player, 4> players;
-    Round g(ids(players));
+    Round g(ids(players), make_sink());
 
     SECTION("first player cannot pass")
     {
@@ -108,7 +122,7 @@ TEST_CASE("Round pass", "[Round]")
 TEST_CASE("Round play_and_finishes", "[Round]")
 {
     std::array<Player, 4> players;
-    Round g(ids(players));
+    Round g(ids(players), make_sink());
 
     SECTION("initial state - no ranks")
     {
@@ -154,7 +168,7 @@ TEST_CASE("Round play_and_finishes", "[Round]")
 TEST_CASE("round finished", "[Round]")
 {
     std::array<Player, 4> players;
-    Round g(ids(players));
+    Round g(ids(players), make_sink());
 
     // all players finish
     g.play_and_finish(players[0].id(), pair_of_threes);
@@ -247,4 +261,9 @@ TEST_CASE("deal_cards", "[Round]")
     CHECK(0 == count_common_cards(players[1].hand(), players[2].hand()));
     CHECK(0 == count_common_cards(players[2].hand(), players[3].hand()));
     CHECK(0 == count_common_cards(players[3].hand(), players[0].hand()));
+}
+
+TEST_CASE("eventing", "[Round]")
+{
+
 }

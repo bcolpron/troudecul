@@ -8,7 +8,8 @@
 int main(int, const char*[])
 {
     std::array<Player, 4> players;
-    Round game(ranges::view::transform(players, [] (const auto& player) {return player.id();}));
+    Round game(ranges::view::transform(players, [] (const auto& player) {return player.id();}),
+               nullptr);
 
     WebSocketServer server;
     server.run(8888);
