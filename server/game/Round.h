@@ -3,7 +3,6 @@
 #include "cards.h"
 #include "Player.h"
 #include "Events.h"
-#include <optional>
 #include <list>
 #include <memory>
 
@@ -22,7 +21,7 @@ public:
     }
 
     const PlayerId& current_player() const;
-    const std::optional<cards::Hand>& hand_to_beat() const { return trick_; }
+    const cards::Hand& trick() const { return trick_; }
 
     void play(const PlayerId& id, const cards::Hand& cards);
     void play_and_finish(const PlayerId& id, const cards::Hand& cards);
@@ -39,7 +38,7 @@ private:
     Players::iterator current_player_;
     Players::iterator last_played_;
     
-    std::optional<cards::Hand> trick_;
+    cards::Hand trick_;
     PlayerIds final_ranks_;
 
     std::shared_ptr<RoundEventSink> event_sink_;
@@ -47,4 +46,4 @@ private:
 
 void deal_cards(Players& players);
 
-bool is_valid_play(const std::optional<cards::Hand>& table, const cards::Hand& play);
+bool is_valid_play(const cards::Hand& trick, const cards::Hand& play);

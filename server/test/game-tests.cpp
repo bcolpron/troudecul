@@ -36,7 +36,7 @@ TEST_CASE("Round initialization", "[Round]")
     std::array<Player, 4> players;
     Round g(ids(players), make_sink());
     CHECK(g.current_player() == players[0].id());
-    CHECK_FALSE(g.hand_to_beat());
+    CHECK(g.trick().empty());
 }
 
 TEST_CASE("Round play", "[Round]")
@@ -47,7 +47,7 @@ TEST_CASE("Round play", "[Round]")
     SECTION("first player plays")
     {
         g.play(players[0].id(), pair_of_threes);
-        CHECK(g.hand_to_beat() == pair_of_threes);
+        CHECK(g.trick() == pair_of_threes);
         CHECK(g.current_player() == players[1].id());
     }
 
@@ -58,7 +58,7 @@ TEST_CASE("Round play", "[Round]")
         g.play(players[2].id(), pair_of_jack);
         g.play(players[3].id(), pair_of_aces);
         CHECK(g.current_player() == players[3].id());
-        CHECK_FALSE(g.hand_to_beat());
+        CHECK(g.trick().empty());
     }
 
     SECTION("all players play 2")
@@ -73,7 +73,7 @@ TEST_CASE("Round play", "[Round]")
         g.play(players[1].id(), pair_of_five);
         g.play(players[2].id(), pair_of_jack);
         CHECK(g.current_player() == players[2].id());
-        CHECK_FALSE(g.hand_to_beat());
+        CHECK(g.trick().empty());
     }
 
     SECTION("wrong player")
@@ -106,7 +106,7 @@ TEST_CASE("Round pass", "[Round]")
         g.pass(players[2].id());
         g.pass(players[3].id());
         CHECK(g.current_player() == players[0].id());
-        CHECK_FALSE(g.hand_to_beat());
+        CHECK(g.trick().empty());
     }
 
     SECTION("all but last player passes")
@@ -116,7 +116,7 @@ TEST_CASE("Round pass", "[Round]")
         g.play(players[2].id(), pair_of_jack);
         g.pass(players[3].id());
         CHECK(g.current_player() == players[2].id());
-        CHECK_FALSE(g.hand_to_beat());
+        CHECK(g.trick().empty());
     }
 }
 
@@ -162,7 +162,7 @@ TEST_CASE("Round play_and_finishes", "[Round]")
         g.pass(players[2].id());
         g.pass(players[3].id());
         CHECK(g.current_player() == players[2].id());
-        CHECK_FALSE(g.hand_to_beat());
+        CHECK(g.trick().empty());
     }
 }
 
@@ -179,7 +179,7 @@ TEST_CASE("round finished", "[Round]")
 
     SECTION("basic state validation")
     {
-        CHECK_FALSE(g.hand_to_beat());
+        CHECK(g.trick().empty());
         CHECK_THROWS_AS(g.current_player(), std::logic_error);
     }
 
@@ -198,8 +198,8 @@ TEST_CASE("round finished", "[Round]")
 
 TEST_CASE("is_valid_play anything beats nothing", "[Round][rules]")
 {
-    CHECK(is_valid_play(std::nullopt, pair_of_threes));
-    CHECK(is_valid_play(std::nullopt, Hand{Card{white_joker}}));
+    CHECK(is_valid_play(Hand{}, pair_of_threes));
+    CHECK(is_valid_play(Hand{}, Hand{Card{white_joker}}));
 }
 
 TEST_CASE("is_valid_play basic", "[Round][rules]")
@@ -210,12 +210,12 @@ TEST_CASE("is_valid_play basic", "[Round][rules]")
 
 TEST_CASE("is_valid_play empty hand", "[Round][rules]")
 {
-    CHECK_FALSE(is_valid_play(std::nullopt, Hand{}));
+    CHECK_FALSE(is_valid_play(Hand{}, Hand{}));
 }
 
 TEST_CASE("is_valid_play mixed cards", "[Round][rules]")
 {
-    CHECK_FALSE(is_valid_play(std::nullopt, Hand{Card{three, spades}, Card{four, spades}}));
+    CHECK_FALSE(is_valid_play(Hand{}, Hand{Card{three, spades}, Card{four, spades}}));
 }
 
 TEST_CASE("is_valid_play wrong number of cards", "[Round][rules]")

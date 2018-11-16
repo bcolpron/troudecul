@@ -12,7 +12,7 @@ void Round::move_on_next_player()
     if (++next == players_.end()) next = players_.begin();
 
     if (next == first_player_) {
-        trick_ = std::nullopt;
+        trick_.clear();
         first_player_ = current_player_ = last_played_;
     } else {
         current_player_ = next;
@@ -34,7 +34,7 @@ void Round::play(const PlayerId& id, const cards::Hand& cards)
 
 void Round::broadcast()
 {
-    event_sink_->broadcast(RoundState{*trick_, *current_player_});
+    event_sink_->broadcast(RoundState{trick_, *current_player_});
 }
 
 void Round::play_and_finish(const PlayerId& id, const cards::Hand& cards)
@@ -66,12 +66,12 @@ void Round::play_and_finish(const PlayerId& id, const cards::Hand& cards)
 void Round::pass(const PlayerId& id)
 {
     if (current_player_ == players_.end()) throw std::logic_error("round is over");
-    if (!trick_) throw std::logic_error("first player cannot pass");
+    if (trick_.empty()) throw std::logic_error("first player cannot pass");
 
     move_on_next_player();
 }
 
-bool is_valid_play(const std::optional<cards::Hand>& table, const cards::Hand& play)
+bool is_valid_play(const cards::Hand& trick, const cards::Hand& play)
 {
     // Validate play hand
     if (play.empty()) return false;
@@ -82,19 +82,19 @@ bool is_valid_play(const std::optional<cards::Hand>& table, const cards::Hand& p
         return false;
     }
 
-    // if play is valid and table is empty, then fine.
-    if (!table) return true;
+    // if play is valid and trick is empty, then fine.
+    if (trick.empty()) return true;
 
-    // Then, make sure play cards number is valid against table
-    if (table->size() != play.size()
+    // Then, make sure play cards number is valid against trick
+    if (trick.size() != play.size()
         && !play.begin()->is_joker()
-        && !(play.begin()->rank() == cards::two && table->size()-1 == play.size()))
+        && !(play.begin()->rank() == cards::two && trick.size()-1 == play.size()))
     {
         return false;
     }
 
     // Finally, compare card strenghs
-    return cards::StrengthCompare()(*(*table).begin(), *play.begin());
+    return cards::StrengthCompare()(*trick.begin(), *play.begin());
 }
 
 void deal_cards(Players& players)
