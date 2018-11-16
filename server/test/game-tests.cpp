@@ -294,4 +294,15 @@ TEST_CASE("eventing", "[Round]")
         CHECK(sink->last_state.trick == pair_of_jack);
     }
 
+    SECTION("after end of turns")
+    {
+        g.play(players[0].id(), pair_of_threes);
+        g.play(players[1].id(), pair_of_five);
+        g.play(players[2].id(), pair_of_jack);
+        g.play(players[3].id(), pair_of_aces);
+        CHECK(sink->call_count == 5);
+        CHECK(sink->last_state.current_player == players[3].id());
+        CHECK(sink->last_state.trick == Hand());
+    }
+
 }
