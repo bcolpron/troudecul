@@ -17,6 +17,8 @@ void Round::move_on_next_player()
     } else {
         current_player_ = next;
     }
+
+    broadcast();
 }
 
 void Round::play(const PlayerId& id, const cards::Hand& cards)
@@ -28,8 +30,6 @@ void Round::play(const PlayerId& id, const cards::Hand& cards)
     last_played_ = current_player_;
 
     move_on_next_player();
-
-    broadcast();
 }
 
 void Round::broadcast()

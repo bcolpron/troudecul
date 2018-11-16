@@ -274,14 +274,24 @@ TEST_CASE("eventing", "[Round]")
     {
         CHECK(sink->call_count == 1);
         CHECK(sink->last_state.current_player == players[0].id());
-        CHECK(sink->last_state.trick == cards::Hand());
+        CHECK(sink->last_state.trick == Hand());
     }
 
-    SECTION("after first player has played")
+    SECTION("after first player plays")
     {
         g.play(players[0].id(), pair_of_jack);
         CHECK(sink->call_count == 2);
         CHECK(sink->last_state.current_player == players[1].id());
         CHECK(sink->last_state.trick == pair_of_jack);
     }
+
+    SECTION("after a player passes")
+    {
+        g.play(players[0].id(), pair_of_jack);
+        g.pass(players[1].id());
+        CHECK(sink->call_count == 3);
+        CHECK(sink->last_state.current_player == players[2].id());
+        CHECK(sink->last_state.trick == pair_of_jack);
+    }
+
 }
