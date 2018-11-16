@@ -17,7 +17,9 @@ public:
       first_player_(players_.begin()),
       current_player_(first_player_),
       event_sink_{event_sink}
-       {}
+    {
+        broadcast();
+    }
 
     const PlayerId& current_player() const;
     const std::optional<cards::Hand>& hand_to_beat() const { return trick_; }
@@ -29,6 +31,7 @@ public:
     const PlayerIds& final_ranks()const { return final_ranks_; }
 private:
     void move_on_next_player();
+    void broadcast();
 
     using Players = std::list<PlayerId>;
     Players players_;

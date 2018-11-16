@@ -28,6 +28,13 @@ void Round::play(const PlayerId& id, const cards::Hand& cards)
     last_played_ = current_player_;
 
     move_on_next_player();
+
+    broadcast();
+}
+
+void Round::broadcast()
+{
+    event_sink_->broadcast(RoundState{*trick_, *current_player_});
 }
 
 void Round::play_and_finish(const PlayerId& id, const cards::Hand& cards)

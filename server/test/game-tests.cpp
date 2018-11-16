@@ -18,7 +18,8 @@ namespace
     {
         virtual void broadcast(const RoundState& s) override
         {
-
+            call_count++;
+            last_state = s;
         }
 
         int call_count = 0;
@@ -265,5 +266,22 @@ TEST_CASE("deal_cards", "[Round]")
 
 TEST_CASE("eventing", "[Round]")
 {
+    std::array<Player, 4> players;
+    auto sink = make_sink();
+    Round g(ids(players), sink);
 
+    SECTION("initial notification") 
+    {
+        CHECK(sink->call_count == 1);
+        CHECK(sink->last_state.current_player == players[0].id());
+        CHECK(sink->last_state.trick == cards::Hand());
+    }
+
+    SECTION("after first player has played")
+    {
+        g.play(players[0].id(), pair_of_jack);
+        CHECK(sink->call_count == 2);
+        CHECK(sink->last_state.current_player == players[1].id());
+        CHECK(sink->last_state.trick == pair_of_jack);
+    }
 }
